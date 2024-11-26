@@ -33,7 +33,7 @@ class Task(models.Model):
     ]
 
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -46,8 +46,10 @@ class Task(models.Model):
 
 class TaskCategories(models.Model):
     id = models.AutoField(primary_key=True)
-    task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="categories")
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="tasks"
+    )
 
     def __str__(self):
         return self.task.title + " - " + self.category.name

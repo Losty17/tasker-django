@@ -7,6 +7,19 @@ class GetTaskList(ServiceBase):
         super().__init__()
 
     def _perform(self):
-        tasks = Task.objects.filter(deleted=False).all()
+        tasks = list(
+            Task.objects.select_related("categories")
+            .filter(deleted=False)
+            .values(
+                "id",
+                "title",
+                "description",
+                "created_at",
+                "updated_at",
+                "priority",
+                "status",
+                "categories__category__name",
+            )
+        )
 
-        return True, "Tasks retrieved successfully", []
+        return True, "Tasks retrieved successfully", tasks
