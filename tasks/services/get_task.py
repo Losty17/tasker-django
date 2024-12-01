@@ -5,13 +5,14 @@ from django.db.models.functions import JSONObject, Coalesce
 from django.db.models import Case, When, Value, Subquery, OuterRef, Q
 
 
-class GetTaskList(ServiceBase):
-    def __init__(self) -> None:
+class GetTask(ServiceBase):
+    def __init__(self, id: int) -> None:
         super().__init__()
+        self.__id = id
 
     def _perform(self):
         tasks = list(
-            Task.objects.filter(deleted=False)
+            Task.objects.filter(deleted=False, id=self.__id)
             .annotate(
                 categories_list=Coalesce(
                     ArrayAgg(
@@ -40,4 +41,9 @@ class GetTaskList(ServiceBase):
             )
         )
 
-        return True, "Tasks retrieved successfully", tasks
+        task = tasks[0] if tasks else None
+
+        if not task:
+            return False, "Task not found", None
+
+        return True, "Tasks retrieved successfully", task
