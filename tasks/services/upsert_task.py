@@ -54,7 +54,7 @@ class UpsertTask(ServiceBase):
 
         task.responsibles.clear()
         task_responsibles = [
-            TaskResponsibles(task=task, user_id=user_id)
+            TaskResponsibles(task=task, responsible_id=user_id)
             for user_id in self.__body.get("responsibles", [])
         ]
         TaskResponsibles.objects.bulk_create(task_responsibles)
