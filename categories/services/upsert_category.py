@@ -24,13 +24,13 @@ class UpsertCategory(ServiceBase):
             ).first()
 
             if category is None:
-                return False, "Task not found", None
+                return False, "Category not found", None
         else:
             category = Category()
 
-        category.name = self.__body.get("title", category.title)
+        category.name = self.__body.get("title", category.name)
         category.description = self.__body.get("description", category.description)
 
         category.save()
 
-        return True, "Task updated successfully", None
+        return True, "Category updated successfully", None

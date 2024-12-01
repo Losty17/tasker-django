@@ -19,4 +19,4 @@ class GetCategoryList(ServiceBase):
             )
         )
 
-        return True, "Tasks retrieved successfully", categories
+        return True, "Categories retrieved successfully", categories
