@@ -37,6 +37,9 @@ class Task(models.Model):
     categories = models.ManyToManyField(
         Category, through="TaskCategories", related_name="tasks"
     )
+    responsibles = models.ManyToManyField(
+        User, through="TaskResponsibles", related_name="tasks"
+    )
 
     deleted = models.BooleanField(default=False)
 
@@ -48,3 +51,12 @@ class TaskCategories(models.Model):
 
     def __str__(self):
         return self.task.title + " - " + self.category.name
+
+
+class TaskResponsibles(models.Model):
+    id = models.AutoField(primary_key=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    responsible = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.task.title + " - " + self.responsible.username

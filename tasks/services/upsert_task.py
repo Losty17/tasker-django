@@ -1,6 +1,6 @@
 from typing import Optional, TypedDict
 from tasker.base.service_base import ServiceBase
-from tasks.models import Task, TaskCategories
+from tasks.models import Task, TaskCategories, TaskResponsibles
 
 
 class TaskBody(TypedDict):
@@ -11,6 +11,7 @@ class TaskBody(TypedDict):
     status: int
     user_id: int
     categories: list[int]
+    responsibles: list[int]
 
 
 class UpsertTask(ServiceBase):
@@ -43,5 +44,12 @@ class UpsertTask(ServiceBase):
             for category_id in self.__body.get("categories", [])
         ]
         TaskCategories.objects.bulk_create(task_categories)
+
+        task.responsibles.clear()
+        task_responsibles = [
+            TaskResponsibles(task=task, user_id=user_id)
+            for user_id in self.__body.get("responsibles", [])
+        ]
+        TaskResponsibles.objects.bulk_create(task_responsibles)
 
         return True, "Task updated successfully", None

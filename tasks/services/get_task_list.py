@@ -28,6 +28,21 @@ class GetTaskList(ServiceBase):
                     Value([]),  # Default to empty list when no categories
                 )
             )
+            .annotate(
+                responsible_list=Coalesce(
+                    ArrayAgg(
+                        JSONObject(
+                            id="responsibles__id",
+                            name="responsibles__name",
+                        ),
+                        filter=~Q(
+                            responsibles__id__isnull=True
+                        ),  # Filter out null users
+                        distinct=True,
+                    ),
+                    Value([]),  # Default to empty list when no users
+                )
+            )
             .values(
                 "id",
                 "title",
@@ -37,6 +52,7 @@ class GetTaskList(ServiceBase):
                 "priority",
                 "status",
                 "categories_list",
+                "responsible_list",
             )
         )
 
