@@ -1,9 +1,5 @@
 from categories.models import Category
 from tasker.base.service_base import ServiceBase
-from tasks.models import Task
-from django.contrib.postgres.aggregates import ArrayAgg
-from django.db.models.functions import JSONObject, Coalesce
-from django.db.models import Case, When, Value, Subquery, OuterRef, Q
 
 
 class GetCategoryList(ServiceBase):
