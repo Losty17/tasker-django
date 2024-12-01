@@ -53,6 +53,7 @@ class GetTask(ServiceBase):
                 "priority",
                 "status",
                 "categories_list",
+                "responsible_list",
             )
         )
 
