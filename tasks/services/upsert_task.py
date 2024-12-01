@@ -33,13 +33,13 @@ class UpsertTask(ServiceBase):
         task.priority = self.__body.get("priority", task.priority)
         task.status = self.__body.get("status", task.status)
 
+        task.save()
+
         task.categories.clear()
         task_categories = [
             TaskCategories(task=task, category_id=category_id)
             for category_id in self.__body.get("categories", [])
         ]
         TaskCategories.objects.bulk_create(task_categories)
-
-        task.save()
 
         return True, "Task updated successfully", None
