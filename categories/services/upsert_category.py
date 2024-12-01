@@ -28,7 +28,7 @@ class UpsertCategory(ServiceBase):
         else:
             category = Category()
 
-        category.name = self.__body.get("title", category.name)
+        category.name = self.__body.get("name", category.name)
         category.description = self.__body.get("description", category.description)
 
         category.save()
