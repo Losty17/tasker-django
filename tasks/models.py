@@ -1,14 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
-class Category(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    description = models.TextField(max_length=255)
-
-    def __str__(self):
-        return self.name
+from categories.models import Category
 
 
 class Task(models.Model):
@@ -41,15 +34,17 @@ class Task(models.Model):
     priority = models.IntegerField(default=0, choices=PRIORITY_CHOICES)
     status = models.IntegerField(default=0, choices=STATUS_CHOICES)
 
+    categories = models.ManyToManyField(
+        Category, through="TaskCategories", related_name="tasks"
+    )
+
     deleted = models.BooleanField(default=False)
 
 
 class TaskCategories(models.Model):
     id = models.AutoField(primary_key=True)
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="categories")
-    category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name="tasks"
-    )
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.task.title + " - " + self.category.name

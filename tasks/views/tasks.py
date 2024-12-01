@@ -18,13 +18,14 @@ class Tasks(BaseView):
         if body is None or not isinstance(body, dict):
             return self.build_response(False, "Invalid request body", None)
 
-        required_fields = ["title", "description"]
+        if not "id" in body:
+            required_fields = ["title", "description"]
 
-        for field in required_fields:
-            if field not in body:
-                return self.build_response(
-                    False, f"Missing required field: {field}", None
-                )
+            for field in required_fields:
+                if field not in body:
+                    return self.build_response(
+                        False, f"Missing required field: {field}", None
+                    )
 
         success, detail, data = UpsertTask(body).perform()
 

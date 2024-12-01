@@ -1,12 +1,15 @@
 from typing import Optional, TypedDict
 from tasker.base.service_base import ServiceBase
-from tasks.models import Task
+from tasks.models import Task, TaskCategories
 
 
 class TaskBody(TypedDict):
     id: Optional[int]
     title: str
     description: str
+    priority: int
+    status: int
+    categories: list[int]
 
 
 class UpsertTask(ServiceBase):
@@ -25,19 +28,18 @@ class UpsertTask(ServiceBase):
         else:
             task = Task()
 
-        task.title = self.__body["title"]
-        task.description = self.__body["description"]
+        task.title = self.__body.get("title", task.title)
+        task.description = self.__body.get("description", task.description)
+        task.priority = self.__body.get("priority", task.priority)
+        task.status = self.__body.get("status", task.status)
+
+        task.categories.clear()
+        task_categories = [
+            TaskCategories(task=task, category_id=category_id)
+            for category_id in self.__body.get("categories", [])
+        ]
+        TaskCategories.objects.bulk_create(task_categories)
+
         task.save()
 
-        serialized_task = {
-            "id": task.id,
-            "title": task.title,
-            "description": task.description,
-            "created_at": task.created_at,
-            "updated_at": task.updated_at,
-            "priority": task.priority,
-            "status": task.status,
-            "categories": [],
-        }
-
-        return True, "Task updated successfully", serialized_task
+        return True, "Task updated successfully", None
