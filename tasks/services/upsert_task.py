@@ -1,6 +1,7 @@
 from typing import Optional, TypedDict
 from tasker.base.service_base import ServiceBase
 from tasks.models import Task, TaskCategories, TaskResponsibles
+from django.contrib.auth.models import User
 
 
 class TaskBody(TypedDict):
@@ -34,7 +35,13 @@ class UpsertTask(ServiceBase):
         task.description = self.__body.get("description", task.description)
         task.priority = self.__body.get("priority", task.priority)
         task.status = self.__body.get("status", task.status)
-        task.user = self.__body.get("user_id", task.user_id)
+
+        user = User.objects.filter(id=self.__body.get("user_id", task.user_id)).first()
+
+        if user is None:
+            return False, "User not found", None
+
+        task.user = user
 
         task.save()
 
