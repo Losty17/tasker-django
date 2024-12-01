@@ -33,7 +33,7 @@ class GetTaskList(ServiceBase):
                     ArrayAgg(
                         JSONObject(
                             id="responsibles__id",
-                            name="responsibles__name",
+                            name="responsibles__first_name",
                         ),
                         filter=~Q(
                             responsibles__id__isnull=True
