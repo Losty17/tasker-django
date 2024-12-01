@@ -9,6 +9,7 @@ class TaskBody(TypedDict):
     description: str
     priority: int
     status: int
+    user_id: int
     categories: list[int]
 
 
@@ -32,6 +33,7 @@ class UpsertTask(ServiceBase):
         task.description = self.__body.get("description", task.description)
         task.priority = self.__body.get("priority", task.priority)
         task.status = self.__body.get("status", task.status)
+        task.user = self.__body.get("user_id", task.user_id)
 
         task.save()
 
